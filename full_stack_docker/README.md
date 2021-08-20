@@ -1,4 +1,6 @@
 
+docker network create mynet
+
 docker run --name mongodb -v data:/data/db --rm -d --network mynet   mongo
 
 docker build -t frontend .
