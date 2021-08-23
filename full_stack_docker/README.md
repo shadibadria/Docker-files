@@ -1,3 +1,13 @@
+
+# Docker compose 
+---------------------
+ Docker Compose 
+---------------------
+docker-compose up -d  - start \
+docker-compose down -v - stop
+
+# or use manual steps :
+
 ---------------------
 Create Network
 ---------------------
@@ -34,6 +44,7 @@ docker run --name backend_server \
   -v /root/Docker-files/full_stack_docker/backend:/app \
   -v /app/node_modules \
   --rm \
+  -d \
   --network mynet \
   -p 80:80 \
   backend_image
