@@ -1,13 +1,63 @@
+---------------------
+Create Network
+---------------------
 
 docker network create mynet
 
-docker run --name mongodb -v data:/data/db --rm -d --network mynet   mongo
+---------------------
+Run MongoDB Container
+---------------------
 
-docker build -t frontend .
+docker run --name mongodb \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=secret \
+  -v data:/data/db \
+  --rm \
+  -d \
+  --network mynet \
+  mongo
 
-docker run --name frontend_server  --rm -p 3000:3000 -it  frontend
+---------------------
+Build Node API Image
+---------------------
 
-docker build -t backend .
+docker build -t backend_image .
 
-docker run --name backend-server -d --rm --network mynet -p 80:80   backend
+---------------------
+Run Node API Container
+---------------------
+
+docker run --name backend_server \
+  -e MONGODB_USERNAME=admin \
+  -e MONGODB_PASSWORD=secret \
+  -v logs:/app/logs \
+  -v /root/Docker-files/full_stack_docker/backend:/app \
+  -v /app/node_modules \
+  --rm \
+  --network mynet \
+  -p 80:80 \
+  backend_image
+
+---------------------
+Build React  Image
+---------------------
+
+docker build -t frontend_image .
+
+---------------------
+Run React  Container
+---------------------
+
+docker run --name frontend_server \
+  -v /root/Docker-files/full_stack_docker/frontend/src:/app/src \
+  --rm \
+  -d \
+  -p 3000:3000 \
+  -it \
+frontend_image
+---------------------
+Stop all Containers
+---------------------
+
+docker stop mongodb backend_server frontend_server
 
